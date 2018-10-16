@@ -1,0 +1,24 @@
+{
+  "name": "LIRI-HW",
+  "version": "1.0.0",
+  "description": "LIRI HW",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyty1602/LIRI-HW.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tyty1602/LIRI-HW/issues"
+  },
+  "homepage": "https://github.com/tyty1602/LIRI-HW#readme",
+  "dependencies": {
+    "node-spotify-api": "^1.0.7",
+    "omdb": "^0.8.0"
+  }
+}
