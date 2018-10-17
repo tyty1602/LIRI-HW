@@ -2,13 +2,17 @@ require("dotenv").config();
 var moment = require('moment');
 moment().format();
 var request = require("request");
-
+var fs = require('fs');
+var songName = process.argv.slice(3).join(' ');
+var Spotify = require('node-spotify-api');
+var spotify = new Spotify({
+  id: '22dedf1bc5474532b883ddf284eb3aff',
+  secret: '38a3838ad2af4964bf8286ca357d62c9'
+});
 
 //Bandsintown
 
-if (process.argv[2] = 'concert-this')
-
-{
+if (process.argv[2] === 'concert-this') {
   var artist = process.argv.slice(3).join('');
   //console.log(artist);
 
@@ -33,16 +37,8 @@ if (process.argv[2] = 'concert-this')
   });
 }
 
-
-// OMBD:
-// --------------------------------------------------------------------------------------------------------
-var request = require("request");
-// Store all of the arguments in an array
-if (process.argv[2] = 'movie-this') {
+else if (process.argv[2] === 'movie-this') {
   var movieName = process.argv.slice(3).join(' ');
-
-  // // Create an empty variable for holding the movie name
-  // var movieName = "";
 
 
   // Then run a request to the OMDB API with the movie specified
@@ -53,30 +49,74 @@ if (process.argv[2] = 'movie-this') {
 
   request(queryUrl, function (error, response, body) {
 
-    // If the request is successful
-    // if (!error && response.statusCode === 200) {
-
-    //   // Parse the body of the site and recover just the imdbRating
-    //   // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-
-    // }
     var result = JSON.parse(body);
-    // console.log(result.length);
+    // console.log(result);
 
-      console.log('Title: ', result.Title);
-      // console.log('Released Date', moment(result.Released).format('MM / DD / YYYY'));
-      console.log('IMDB rating: ', result.imbdRating);
-      console.log('Rotten tomatoes', result.Ratings[1]);
-      console.log('Countries', + result.Country);
-      console.log('Language: ', + result.Language)
-      console.log('Plot: ', + result.Plot)
-      console.log('Actors: ' + result.Actors)
-    
+    console.log('Title: ', result.Title);
+    console.log('Released Date: ', moment(result.Released).format('MM / DD / YYYY'));
+    console.log('IMDB rating: ', result.imbdRating);
+    console.log('Rotten tomatoes', result.Ratings[1]);
+    console.log('Countries: ', result.Country);
+    console.log('Language: ', result.Language);
+    console.log('Plot: ', result.Plot);
+    console.log('Actors: ', result.Actors);
 
   });
 
 }
 
 //Spotify
+else if (process.argv[2] === 'spotify-this-song') {
 
-// var spotify = new Spotify(keys.spotify);
+
+
+  spotify.search({ type: 'track', query: songName }, function (err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+
+    // console.log(data);
+    // console.log(data.tracks.items[0])
+    var track = data.tracks.items[0];
+    var artists = track.artists;
+    artists.forEach(function (artist) {
+      console.log("Artist Name: ", artist.name)
+    })
+    console.log('Song Name: ', track.name);
+    console.log('Preview URL ', track.preview_url);
+    console.log("Album Preview URL", track.album.name)
+  });
+
+}
+
+//Liri do what it says
+
+else if (process.argv[2] === 'do-what-it-says') {
+
+  fs.readFile('./random.txt', "utf8", (err, data) => {
+    if (err) throw err;
+    console.log(data);
+
+    var str = data;
+    var res = str.split(",");
+    console.log(res)
+    var songNameL = data[1];
+
+    spotify.search({ type: 'track', query: songNameL }, function (err, data) {
+      if (err) {
+        return console.log('Error occurred: ' + err);
+      }
+
+      //console.log(data);
+      console.log(data.tracks.items[0])
+      var artists = tracks.artists;
+      artists.forEach(function (artist) {
+        console.log("Artist Name: ", artist.name)
+      })
+      console.log('Song Name: ', tracks.name);
+      console.log('Preview URL ', tracks.preview_url);
+      console.log("Album Preview URL", tracks.album.name)
+    });
+
+  });
+}
