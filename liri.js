@@ -1,49 +1,82 @@
-// Test OMBD:
-// --------------------------------------------------------------------------------------------------------
-
-// Level 2 (More Challenging):
-// Take a move with multiple words (ex: Forrest Gump) as a Node argument and retrieve the year it was created.
-// ---------------------------------------------------------------------------------------------------------
-
-// Include the request npm package (Don't forget to run "npm install request" in this folder first!)
+require("dotenv").config();
+var moment = require('moment');
+moment().format();
 var request = require("request");
 
-// Store all of the arguments in an array
-var nodeArgs = process.argv;
 
-// Create an empty variable for holding the movie name
-var movieName = "";
+//Bandsintown
 
-// Loop through all the words in the node argument
-// And do a little for-loop magic to handle the inclusion of "+"s
-for (var i = 2; i < nodeArgs.length; i++) {
+if (process.argv[2] = 'concert-this')
 
-  if (i > 2 && i < nodeArgs.length) {
+{
+  var artist = process.argv.slice(3).join('');
+  //console.log(artist);
 
-    movieName = movieName + "+" + nodeArgs[i];
+  var queryURL = 'https://rest.bandsintown.com/artists/' + artist + '/events?app_id=codingbootcamp';
+  console.log(queryURL);
 
-  }
+  request(queryURL, function (error, response, body) {
+    if (error) {
+      console.log(error);
+      //console.log(response)
+    }
 
-  else {
+    var result = JSON.parse(body);
+    //console.log(result)
 
-    movieName += nodeArgs[i];
-
-  }
+    for (i = 0; i < result.length; i++) {
+      //console.log(i);
+      console.log('Venue name: ', result[i].venue.name);
+      console.log('Venue city, state: ', result[i].venue.city, result[i].venue.region);
+      console.log('Date of event', moment(result[i].datetime).format('MM / DD / YYYY'));
+    }
+  });
 }
 
-// Then run a request to the OMDB API with the movie specified
-var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
-// This line is just to help us debug against the actual URL.
-console.log(queryUrl);
+// OMBD:
+// --------------------------------------------------------------------------------------------------------
+var request = require("request");
+// Store all of the arguments in an array
+if (process.argv[2] = 'movie-this') {
+  var movieName = process.argv.slice(3).join(' ');
 
-request(queryUrl, function(error, response, body) {
+  // // Create an empty variable for holding the movie name
+  // var movieName = "";
 
-  // If the request is successful
-  if (!error && response.statusCode === 200) {
 
-    // Parse the body of the site and recover just the imdbRating
-    // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-    console.log("Release Year: " + JSON.parse(body).Year);
-  }
-});
+  // Then run a request to the OMDB API with the movie specified
+  var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=trilogy";
+
+  // This line is just to help us debug against the actual URL.
+  console.log(queryUrl);
+
+  request(queryUrl, function (error, response, body) {
+
+    // If the request is successful
+    // if (!error && response.statusCode === 200) {
+
+    //   // Parse the body of the site and recover just the imdbRating
+    //   // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
+
+    // }
+    var result = JSON.parse(body);
+    // console.log(result.length);
+
+      console.log('Title: ', result.Title);
+      // console.log('Released Date', moment(result.Released).format('MM / DD / YYYY'));
+      console.log('IMDB rating: ', result.imbdRating);
+      console.log('Rotten tomatoes', result.Ratings[1]);
+      console.log('Countries', + result.Country);
+      console.log('Language: ', + result.Language)
+      console.log('Plot: ', + result.Plot)
+      console.log('Actors: ' + result.Actors)
+    
+
+  });
+
+}
+
+//Spotify
+
+// var spotify = new Spotify(keys.spotify);
