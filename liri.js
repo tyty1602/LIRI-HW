@@ -95,28 +95,36 @@ else if (process.argv[2] === 'do-what-it-says') {
 
   fs.readFile('./random.txt', "utf8", (err, data) => {
     if (err) throw err;
-    console.log(data);
+    // console.log(data);
 
     var str = data;
     var res = str.split(",");
-    console.log(res)
-    var songNameL = data[1];
+    //console.log(res)
+    var songNameL = res[1];
 
-    spotify.search({ type: 'track', query: songNameL }, function (err, data) {
-      if (err) {
-        return console.log('Error occurred: ' + err);
-      }
-
-      //console.log(data);
-      console.log(data.tracks.items[0])
-      var artists = tracks.artists;
-      artists.forEach(function (artist) {
-        console.log("Artist Name: ", artist.name)
-      })
-      console.log('Song Name: ', tracks.name);
-      console.log('Preview URL ', tracks.preview_url);
-      console.log("Album Preview URL", tracks.album.name)
-    });
+    spot(songNameL)
 
   });
 }
+
+
+function spot(songName){
+  console.log({songName})
+  spotify.search({ type: 'track', query: songName }, function (err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+
+    // console.log(data);
+    // console.log(data.tracks.items[0])
+    var track = data.tracks.items[0];
+    var artists = track.artists;
+    artists.forEach(function (artist) {
+      console.log("Artist Name: ", artist.name)
+    })
+    console.log('Song Name: ', track.name);
+    console.log('Preview URL ', track.preview_url);
+    console.log("Album Preview URL", track.album.name)
+  });
+}
+
